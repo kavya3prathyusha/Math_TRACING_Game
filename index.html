@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Tracing Game</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        .game-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            margin: auto;
+            border: 2px solid #333;
+            background-color: #f9f9f9;
+        }
+        .question {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+        .path {
+            position: absolute;
+            width: 100px;
+            height: 200px;
+            border: 2px dashed blue;
+            transform: rotate(45deg);
+            cursor: pointer;
+        }
+        .answer {
+            position: absolute;
+            bottom: 10px;
+            font-size: 20px;
+            background: yellow;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        .puppy {
+            position: absolute;
+            top: 10px;
+            width: 50px;
+            height: 50px;
+            transition: all 1s ease-in-out;
+        }
+        .reward {
+            font-size: 20px;
+            color: green;
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Math Tracing Game</h1>
+    <div class="question" id="question"></div>
+    <div class="game-container">
+        <img src="puppy.png" class="puppy" id="puppy" alt="puppy">
+        <div class="path" id="path1"></div>
+        <div class="path" id="path2"></div>
+        <div class="answer" id="answer1"></div>
+        <div class="answer" id="answer2"></div>
+    </div>
+    <div class="reward" id="reward">🎉 Great job! You earned a star! ⭐</div>
+    <audio id="correctSound" src="correct.mp3"></audio>
+    <audio id="wrongSound" src="wrong.mp3"></audio>
+    <script>
+        function generateQuestion() {
+            let num1 = Math.floor(Math.random() * 10) + 1;
+            let num2 = Math.floor(Math.random() * 10) + 1;
+            let correctAnswer = num1 + num2;
+            let wrongAnswer = correctAnswer + (Math.random() > 0.5 ? 1 : -1);
+
+            document.getElementById("question").innerText = `${num1} + ${num2} = ?`;
+            let isCorrectLeft = Math.random() > 0.5;
+
+            document.getElementById("answer1").innerText = isCorrectLeft ? correctAnswer : wrongAnswer;
+            document.getElementById("answer2").innerText = isCorrectLeft ? wrongAnswer : correctAnswer;
+
+            document.getElementById("path1").style.left = "50px";
+            document.getElementById("path2").style.left = "250px";
+            document.getElementById("answer1").style.left = "40px";
+            document.getElementById("answer2").style.left = "240px";
+            document.getElementById("reward").style.display = "none";
+        }
+
+        document.getElementById("path1").addEventListener("click", function() {
+            let chosenAnswer = parseInt(document.getElementById("answer1").innerText);
+            checkAnswer(chosenAnswer);
+        });
+
+        document.getElementById("path2").addEventListener("click", function() {
+            let chosenAnswer = parseInt(document.getElementById("answer2").innerText);
+            checkAnswer(chosenAnswer);
+        });
+
+        function checkAnswer(answer) {
+            let correctAnswer = eval(document.getElementById("question").innerText.split("=")[0].trim());
+            if (answer === correctAnswer) {
+                document.getElementById("puppy").style.top = "300px";
+                document.getElementById("correctSound").play();
+                document.getElementById("reward").style.display = "block";
+                setTimeout(generateQuestion, 3000);
+            } else {
+                document.getElementById("wrongSound").play();
+                alert("Oops! Try again.");
+            }
+        }
+
+        generateQuestion();
+    </script>
+</body>
+</html>
